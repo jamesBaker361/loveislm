@@ -12,11 +12,17 @@ def conversation(llm,input_file='input_basic.txt'):
         template=template
     )
 
+    prompt_basic= PromptTemplate(
+        input_variables=["input","history"],
+        template='This is a prompt and we expect the input to be {input} and history to be {history}'
+    )
+
+    memory=ConversationEntityMemory(llm=llm)
     conversation_with_memory = ConversationChain(
         llm=llm, 
         verbose=True,
         prompt=prompt,
-        memory=ConversationEntityMemory(llm=llm)
+        memory=memory
     )
 
     dramatic_principle = ConstitutionalPrinciple(
@@ -35,7 +41,11 @@ def conversation(llm,input_file='input_basic.txt'):
     with open(input_file, 'r') as file:
         lines=file.readlines()
 
+    responses=[]
     for line in lines:
-        response=conversation_with_memory.predict(input=line)
-        #response=constitutional_chain.predict(line)
-        print(response)
+        variables=memory.load_memory_variables({"input": line})
+        response=constitutional_chain.run(input=line,history=variables['history'], entities=variables["entities"])
+        responses.append(response)
+
+    for r in responses:
+        print(r)
