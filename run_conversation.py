@@ -12,11 +12,6 @@ def conversation(llm,input_file='input_basic.txt'):
         template=template
     )
 
-    prompt_basic= PromptTemplate(
-        input_variables=["input","history"],
-        template='This is a prompt and we expect the input to be {input} and history to be {history}'
-    )
-
     memory=ConversationEntityMemory(llm=llm)
     conversation_with_memory = ConversationChain(
         llm=llm, 
