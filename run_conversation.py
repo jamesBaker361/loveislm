@@ -42,5 +42,4 @@ def conversation(llm,input_file='input_basic.txt'):
         response=constitutional_chain.run(input=line,history=variables['history'], entities=variables["entities"])
         responses.append(response)
 
-    for r in responses:
-        print(r)
+    return responses
